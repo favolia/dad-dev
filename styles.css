@@ -1,0 +1,110 @@
+/* style.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  line-height: 1.6;
+  padding: 2rem;
+  text-align: center;
+}
+
+a {
+  color: #4da6ff;
+  text-decoration: none;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+/* Kotak section */
+.section-box {
+  background-color: #f7f9fc;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.section-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Judul */
+h1, h2 {
+  font-size: 2rem;
+  color: #4da6ff;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Foto VTuber */
+#vtuber-photo {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+}
+
+#vtuber-photo:hover {
+  transform: scale(1.05);
+}
+
+/* Icon Media Sosial */
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 2rem;
+  margin-top: 1rem;
+}
+
+.social-icons a {
+  color: #4da6ff;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #0078ff;
+  transform: scale(1.2);
+}
+
+/* Tabel Jadwal */
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  text-align: center; /* Menengahkan semua isi tabel */
+}
+
+.schedule-table th,
+.schedule-table td {
+  padding: 0.75rem;
+  text-align: center; /* Pastikan setiap sel rata tengah */
+  border-bottom: 1px solid #ddd;
+}
+
+.schedule-table th {
+  background-color: #e6f0ff;
+  color: #333;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.schedule-table tr:hover {
+  background-color: #f1f9ff;
+}

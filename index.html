@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jadwal Streaming VTuber</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Font Awesome untuk ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css ">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Judul -->
+    <header>
+      <h1>(Nama Vtuber)</h1>
+    </header>
+
+    <!-- Profil VTuber -->
+    <section class="section-box">
+      <img id="vtuber-photo" src="assets/images/vtuber.jpg" alt="Foto VTuber" />
+      <p>Seorang VTuber yang suka bernyanyi dan bermain game!</p>
+    </section>
+
+    <!-- Media Sosial -->
+    <section class="section-box">
+      <h2>Media Sosial</h2>
+      <div class="social-icons">
+        <a href="https://youtube.com/ @VTuber" target="_blank" title="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://discord.gg/example " target="_blank" title="Discord">
+          <i class="fab fa-discord"></i>
+        </a>
+        <a href="https://twitter.com/VTuber " target="_blank" title="Twitter / X">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://instagram.com/vtuber " target="_blank" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- Jadwal Streaming -->
+    <section class="section-box">
+      <h2>Jadwal Live Streaming</h2>
+      <div id="schedule">
+        <p>Memuat jadwal...</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- PapaParse untuk parsing CSV -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js "></script>
+  <!-- Script utama -->
+  <script src="script.js"></script>
+</body>
+</html>
