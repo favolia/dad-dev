@@ -1,152 +1,184 @@
-const CSV_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjz_-3__b_SfzKznR6avvABfMNoW8GAI4znLUBQREsFuKNtV-Tzu_EIm5z1C1pkoGpQQlyKWk39KGUkEdbjz-5Xm0EmHNA3Z4tcs38UZZvvFxJHwmHAxVXt3oDsZYQZIUDR3mYYoWtH7wR0cpi5jbiGSe5nHkKNA6NUS2JDy6oGodO16vHOILtqAjab9sslYGEYfNHHo-hdP-TvDEFjZ5HMvVTzls1alwqrQeWrE8nucTVQ1StBETYaC1MgMSfLumQBPNtXxX21UQq1iLljjx_wE6uUqw&lib=MgOyUZw9O4lSTxSssbhJMq2RrRt3Unk6i ';
-const scheduleContainer = document.getElementById('schedule');
-
-// Show loading indicator
-function showLoading() {
-  scheduleContainer.innerHTML = '<div class="loading">Memuat jadwal...</div>';
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-// Load schedule data
-function loadSchedule() {
-  showLoading();
-
-  fetch(CSV_URL)
-    .then(response => response.json())
-    .then(data => {
-      scheduleContainer.innerHTML = '';
-
-      if (!Array.isArray(data) || data.length === 0) {
-        scheduleContainer.innerHTML = '<p>Tidak ada jadwal streaming ditemukan.</p>';
-        return;
-      }
-
-      const isMobile = window.matchMedia("(max-width: 600px)").matches;
-
-      if (isMobile) {
-        renderCards(data);
-      } else {
-        renderTable(data);
-      }
-
-      // Responsive re-render
-      window.addEventListener('resize', () => {
-        if (window.matchMedia("(max-width: 600px)").matches) {
-          renderCards(data);
-        } else {
-          renderTable(data);
-        }
-      });
-
-    })
-    .catch(error => {
-      console.error('Gagal memuat data:', error);
-      scheduleContainer.innerHTML = '<p>Gagal memuat jadwal. Silakan coba lagi nanti.</p>';
-    });
+html {
+  font-size: 16px;
 }
 
-// Render as table (desktop)
-function renderTable(data) {
-  scheduleContainer.innerHTML = '';
-  const table = document.createElement('table');
-  table.className = 'schedule-table';
-
-  const thead = document.createElement('thead');
-  const headerRow = document.createElement('tr');
-  headerRow.innerHTML = `
-    <th>NO</th>
-    <th>TANGGAL</th>
-    <th>WAKTU</th>
-    <th>AGENDA KEGIATAN</th>
-  `;
-  thead.appendChild(headerRow);
-  table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-
-  data.forEach((row, index) => {
-    if (!row || row.length < 2 || !row[0] || !row[1]) return;
-
-    const tr = document.createElement('tr');
-    
-    // Normalize values to check for OFF/Libur
-    const tanggal = (row[1] || '').trim().toUpperCase();
-    const waktu = (row[2] || '').trim().toUpperCase();
-    const agenda = (row[3] || '').trim().toUpperCase();
-
-    // Check for OFF or Libur
-    if (tanggal.includes("OFF") || waktu.includes("OFF") || agenda.includes("OFF") ||
-        tanggal.includes("LIBUR") || waktu.includes("LIBUR") || agenda.includes("LIBUR")) {
-      tr.style.backgroundColor = "#ffe0e0"; // Light red
-      tr.style.color = "#b30000";
-    } 
-    // Check if all fields are filled
-    else if (row[1] && row[2] && row[3]) {
-      tr.style.backgroundColor = "#e0f7fa"; // Light blue
-      tr.style.color = "#00695c";
-    }
-
-    tr.innerHTML = `
-      <td>${row[0]}</td>
-      <td>${row[1]}</td>
-      <td>${row[2] || '-'}</td>
-      <td>${row[3] || '-'}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  table.appendChild(tbody);
-  scheduleContainer.appendChild(table);
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  line-height: 1.6;
+  padding: 1rem;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-// Render as cards (mobile)
-function renderCards(data) {
-  scheduleContainer.innerHTML = '';
-  data.forEach((row, index) => {
-    if (!row || row.length < 2 || !row[0] || !row[1]) return;
-
-    const card = document.createElement('div');
-    card.className = 'schedule-card';
-
-    const tanggal = (row[1] || '').toUpperCase();
-    const waktu = (row[2] || '').toUpperCase();
-    const agenda = (row[3] || '').toUpperCase();
-
-    let bgColor = "#fff";
-    let textColor = "#333";
-
-    if (tanggal.includes("OFF") || waktu.includes("OFF") || agenda.includes("OFF") ||
-        tanggal.includes("LIBUR") || waktu.includes("LIBUR") || agenda.includes("LIBUR")) {
-      bgColor = "#ffe0e0";
-      textColor = "#b30000";
-    } else if (row[1] && row[2] && row[3]) {
-      bgColor = "#e0f7fa";
-      textColor = "#00695c";
-    }
-
-    card.style.backgroundColor = bgColor;
-    card.style.color = textColor;
-
-    card.innerHTML = `
-      <p><strong>No:</strong> ${row[0]}</p>
-      <p><strong>Tanggal:</strong> ${row[1]}</p>
-      <p><strong>Waktu:</strong> ${row[2] || '-'}</p>
-      <p><strong>Agenda:</strong> ${row[3] || '-'}</p>
-    `;
-    scheduleContainer.appendChild(card);
-  });
+a {
+  color: #4da6ff;
+  text-decoration: none;
 }
 
-// Call load function
-loadSchedule();
+/* Container */
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 1rem;
+}
 
-// Toggle Dark Mode
-const themeToggle = document.getElementById('theme-toggle');
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
-  const icon = themeToggle.querySelector('i');
-  if (document.body.classList.contains('dark-mode')) {
-    icon.classList.replace('fa-moon', 'fa-sun');
-  } else {
-    icon.classList.replace('fa-sun', 'fa-moon');
+/* Section Boxes */
+.section-box {
+  background-color: #f7f9fc;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.section-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Headings */
+h1, h2 {
+  font-size: 1.8rem;
+  color: #4da6ff;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Profile Section */
+.profile-section img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.profile-section img:hover {
+  transform: scale(1.05);
+}
+
+/* Social Icons */
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 2rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.social-icons a {
+  color: #4da6ff;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #0078ff;
+  transform: scale(1.2);
+}
+
+/* Schedule Table */
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.schedule-table th,
+.schedule-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.schedule-table th {
+  background-color: #e6f0ff;
+  color: #333;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.schedule-table tr:hover {
+  background-color: #f1f9ff;
+}
+
+/* Card Layout for Small Screens */
+@media (max-width: 600px) {
+  .schedule-table {
+    display: none;
   }
-});
+
+  .schedule-card {
+    display: block;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  .schedule-card p {
+    margin: 0.3rem 0;
+  }
+}
+
+/* Loading Spinner */
+.loading {
+  font-style: italic;
+  color: #888;
+  margin-top: 1rem;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: #4da6ff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: #0078ff;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background-color: #121212;
+  color: #f5f5f5;
+}
+
+body.dark-mode .section-box {
+  background-color: #1e1e1e;
+  box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+}
+
+/* Custom Row Styles */
+.schedule-table tr[style*="background-color"] {
+  font-weight: bold;
+}
