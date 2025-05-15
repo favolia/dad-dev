@@ -1,17 +1,22 @@
-const CSV_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjz_-3__b_SfzKznR6avvABfMNoW8GAI4znLUBQREsFuKNtV-Tzu_EIm5z1C1pkoGpQQlyKWk39KGUkEdbjz-5Xm0EmHNA3Z4tcs38UZZvvFxJHwmHAxVXt3oDsZYQZIUDR3mYYoWtH7wR0cpi5jbiGSe5nHkKNA6NUS2JDy6oGodO16vHOILtqAjab9sslYGEYfNHHo-hdP-TvDEFjZ5HMvVTzls1alwqrQeWrE8nucTVQ1StBETYaC1MgMSfLumQBPNtXxX21UQq1iLljjx_wE6uUqw&lib=MgOyUZw9O4lSTxSssbhJMq2RrRt3Unk6i';
+// URL sumber data CSV
+const CSV_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjz_-3__b_SfzKznR6avvABfMNoW8GAI4znLUBQREsFuKNtV-Tzu_EIm5z1C1pkoGpQQlyKWk39KGUkEdbjz-5Xm0EmHNA3Z4tcs38UZZvvFxJHwmHAxVXt3oDsZYQZIUDR3mYYoWtH7wR0cpi5jbiGSe5nHkKNA6NUS2JDy6oGodO16vHOILtqAjab9sslYGEYfNHHo-hdP-TvDEFjZ5HMvVTzls1alwqrQeWrE8nucTVQ1StBETYaC1MgMSfLumQBPNtXxX21UQq1iLljjx_wE6uUqw&lib=MgOyUZw9O4lSTxSssbhJMq2RrRt3Unk6i ';
+
 const scheduleContainer = document.getElementById('schedule');
 
-// Show loading indicator
+// Tampilkan indikator loading
 function showLoading() {
   scheduleContainer.innerHTML = '<div class="loading">Memuat jadwal...</div>';
 }
 
-// Load schedule data
+// Muat data jadwal dari CSV
 function loadSchedule() {
   showLoading();
 
   fetch(CSV_URL)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) throw new Error("Jaringan bermasalah");
+      return response.json();
+    })
     .then(data => {
       scheduleContainer.innerHTML = '';
 
@@ -20,23 +25,7 @@ function loadSchedule() {
         return;
       }
 
-      const isMobile = window.matchMedia("(max-width: 600px)").matches;
-
-      if (isMobile) {
-        renderCards(data);
-      } else {
-        renderTable(data);
-      }
-
-      // Responsive re-render
-      window.addEventListener('resize', () => {
-        if (window.matchMedia("(max-width: 600px)").matches) {
-          renderCards(data);
-        } else {
-          renderTable(data);
-        }
-      });
-
+      renderTimeline(data);
     })
     .catch(error => {
       console.error('Gagal memuat data:', error);
@@ -44,99 +33,64 @@ function loadSchedule() {
     });
 }
 
-// Render as table (desktop)
-function renderTable(data) {
+// Render timeline jadwal
+function renderTimeline(data) {
   scheduleContainer.innerHTML = '';
-  const table = document.createElement('table');
-  table.className = 'schedule-table';
-
-  const thead = document.createElement('thead');
-  const headerRow = document.createElement('tr');
-  headerRow.innerHTML = `
-    <th>NO</th>
-    <th>TANGGAL</th>
-    <th>WAKTU</th>
-    <th>AGENDA KEGIATAN</th>
-  `;
-  thead.appendChild(headerRow);
-  table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
 
   data.forEach((row, index) => {
     if (!row || row.length < 2 || !row[0] || !row[1]) return;
 
-    const tr = document.createElement('tr');
-    
-    // Normalize values to check for OFF/Libur
     const tanggal = (row[1] || '').trim().toUpperCase();
-    const waktu = (row[2] || '').trim().toUpperCase();
-    const agenda = (row[3] || '').trim().toUpperCase();
+    const waktu = (row[2] || '').trim();
+    const agenda = (row[3] || '').trim();
 
-    // Check for OFF or Libur
-    if (tanggal.includes("OFF") || waktu.includes("OFF") || agenda.includes("OFF") ||
-        tanggal.includes("LIBUR") || waktu.includes("LIBUR") || agenda.includes("LIBUR")) {
-      tr.style.backgroundColor = "#ffe0e0"; // Light red
-      tr.style.color = "#b30000";
-    } 
-    // Check if all fields are filled
-    else if (row[1] && row[2] && row[3]) {
-      tr.style.backgroundColor = "#e0f7fa"; // Light blue
-      tr.style.color = "#00695c";
+    // Deteksi hari dari tanggal (format: HARI-tanggal)
+    const hari = tanggal.split('-')[0].trim();
+
+    // Tentukan apakah ini OFF/LIBUR
+    const isOffOrLibur =
+      tanggal.includes("OFF") ||
+      tanggal.includes("LIBUR") ||
+      waktu.includes("OFF") ||
+      waktu.includes("LIBUR") ||
+      agenda.includes("OFF") ||
+      agenda.includes("LIBUR");
+
+    // Buat elemen item timeline
+    const scheduleItem = document.createElement('div');
+    scheduleItem.className = 'schedule-item';
+
+    // Elemen Hari
+    const dayElement = document.createElement('span');
+    dayElement.className = 'schedule-day';
+    dayElement.textContent = hari;
+
+    // Jika OFF/LIBUR, tambahkan kelas khusus untuk warna merah
+    if (isOffOrLibur) {
+      dayElement.classList.add('off-or-libur');
     }
 
-    tr.innerHTML = `
-      <td>${row[0]}</td>
-      <td>${row[1]}</td>
-      <td>${row[2] || '-'}</td>
-      <td>${row[3] || '-'}</td>
-    `;
-    tbody.appendChild(tr);
-  });
+    // Elemen Info Jadwal
+    const infoElement = document.createElement('div');
+    infoElement.className = 'schedule-info';
 
-  table.appendChild(tbody);
-  scheduleContainer.appendChild(table);
-}
+    const agendaText = document.createElement('p');
+    agendaText.textContent = agenda || '-';
 
-// Render as cards (mobile)
-function renderCards(data) {
-  scheduleContainer.innerHTML = '';
-  data.forEach((row, index) => {
-    if (!row || row.length < 2 || !row[0] || !row[1]) return;
+    const timeText = document.createElement('p');
+    timeText.textContent = waktu || '-';
 
-    const card = document.createElement('div');
-    card.className = 'schedule-card';
+    infoElement.appendChild(agendaText);
+    infoElement.appendChild(timeText);
 
-    const tanggal = (row[1] || '').toUpperCase();
-    const waktu = (row[2] || '').toUpperCase();
-    const agenda = (row[3] || '').toUpperCase();
+    scheduleItem.appendChild(dayElement);
+    scheduleItem.appendChild(infoElement);
 
-    let bgColor = "#fff";
-    let textColor = "#333";
-
-    if (tanggal.includes("OFF") || waktu.includes("OFF") || agenda.includes("OFF") ||
-        tanggal.includes("LIBUR") || waktu.includes("LIBUR") || agenda.includes("LIBUR")) {
-      bgColor = "#ffe0e0";
-      textColor = "#b30000";
-    } else if (row[1] && row[2] && row[3]) {
-      bgColor = "#e0f7fa";
-      textColor = "#00695c";
-    }
-
-    card.style.backgroundColor = bgColor;
-    card.style.color = textColor;
-
-    card.innerHTML = `
-      <p><strong>No:</strong> ${row[0]}</p>
-      <p><strong>Tanggal:</strong> ${row[1]}</p>
-      <p><strong>Waktu:</strong> ${row[2] || '-'}</p>
-      <p><strong>Agenda:</strong> ${row[3] || '-'}</p>
-    `;
-    scheduleContainer.appendChild(card);
+    scheduleContainer.appendChild(scheduleItem);
   });
 }
 
-// Call load function
+// Jalankan fungsi muat jadwal saat halaman dibuka
 loadSchedule();
 
 // Toggle Dark Mode
