@@ -17,7 +17,7 @@
 
     <!-- Judul -->
     <header>
-      <h1>(Nama Vtuber)</h1>
+      <h1>(Nama VTuber)</h1>
     </header>
 
     <!-- Profil VTuber -->
@@ -48,12 +48,20 @@
     <!-- Jadwal Streaming -->
     <section class="section-box schedule-section">
       <h2>Jadwal Live Streaming</h2>
-      <div id="schedule">
-        <div class="loading">Memuat jadwal...</div>
+      <div class="schedule-wrapper">
+        <!-- Timeline -->
+        <div id="schedule" class="schedule-container">
+          <!-- Timeline items akan dibuat oleh script.js -->
+        </div>
+
+        <!-- Foto VTuber - di sebelah kanan timeline -->
+        <div class="vtuber-photo-box">
+          <img src="assets/images/vtuber2.jpg" alt="Foto VTuber" loading="lazy" />
+        </div>
       </div>
     </section>
 
-    <!-- Dark Mode Toggle -->
+    <!-- Tombol Dark Mode -->
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
       <i class="fas fa-moon"></i>
     </button>
