@@ -13,64 +13,67 @@
 </head>
 <body>
 
-  <div class="container">
+  <!-- Navbar Glassmorphism -->
+  <nav class="glass-navbar">
+    <div class="logo">(Nama VTuber)</div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#profile">Profile</a></li>
+      <li><a href="#medsos">Media Sosial</a></li>
+      <li><a href="#jadwal">Jadwal</a></li>
+    </ul>
+    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
+  </nav>
 
-    <!-- Judul -->
-    <header>
-      <h1>(Nama VTuber)</h1>
-    </header>
+  <!-- Profil VTuber - Fullscreen Section -->
+  <section id="profile" class="fullscreen-section profile-section">
+    <img id="vtuber-photo" src="assets/images/vtuber.jpg" alt="Foto VTuber" loading="lazy" />
+    <p>Seorang VTuber yang suka bernyanyi dan bermain game!</p>
+  </section>
 
-    <!-- Profil VTuber -->
-    <section class="section-box profile-section">
-      <img id="vtuber-photo" src="assets/images/vtuber.jpg" alt="Foto VTuber" loading="lazy" />
-      <p>Seorang VTuber yang suka bernyanyi dan bermain game!</p>
-    </section>
+  <!-- Media Sosial - Fullscreen Section -->
+  <section id="medsos" class="fullscreen-section social-section">
+    <h2>Media Sosial</h2>
+    <div class="social-icons" role="group" aria-label="Social media links">
+      <a href="https://youtube.com/ @VTuber" target="_blank" title="YouTube" aria-label="YouTube">
+        <i class="fab fa-youtube"></i>
+      </a>
+      <a href="https://discord.gg/example " target="_blank" title="Discord" aria-label="Discord">
+        <i class="fab fa-discord"></i>
+      </a>
+      <a href="https://twitter.com/VTuber " target="_blank" title="Twitter / X" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://instagram.com/vtuber " target="_blank" title="Instagram" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+  </section>
 
-    <!-- Media Sosial -->
-    <section class="section-box social-section">
-      <h2>Media Sosial</h2>
-      <div class="social-icons" role="group" aria-label="Social media links">
-        <a href="https://youtube.com/ @VTuber" target="_blank" title="YouTube" aria-label="YouTube">
-          <i class="fab fa-youtube"></i>
-        </a>
-        <a href="https://discord.gg/example " target="_blank" title="Discord" aria-label="Discord">
-          <i class="fab fa-discord"></i>
-        </a>
-        <a href="https://twitter.com/VTuber " target="_blank" title="Twitter / X" aria-label="Twitter">
-          <i class="fab fa-twitter"></i>
-        </a>
-        <a href="https://instagram.com/vtuber " target="_blank" title="Instagram" aria-label="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
+  <!-- Jadwal Streaming - Fullscreen Section -->
+  <section id="jadwal" class="fullscreen-section schedule-section">
+    <h2>Jadwal Live Streaming</h2>
+    <div class="schedule-wrapper">
+      <!-- Timeline -->
+      <div id="schedule" class="schedule-container">
+        <!-- Timeline items akan dibuat oleh script.js -->
       </div>
-    </section>
 
-    <!-- Jadwal Streaming -->
-    <section class="section-box schedule-section">
-      <h2>Jadwal Live Streaming</h2>
-      <div class="schedule-wrapper">
-        <!-- Timeline -->
-        <div id="schedule" class="schedule-container">
-          <!-- Timeline items akan dibuat oleh script.js -->
-        </div>
-
-        <!-- Foto VTuber - di sebelah kanan timeline -->
-        <div class="vtuber-photo-box">
-          <img src="assets/images/vtuber2.jpg" alt="Foto VTuber" loading="lazy" />
-        </div>
+      <!-- Foto VTuber - di sebelah kanan timeline -->
+      <div class="vtuber-photo-box">
+        <img src="assets/images/vtuber2.jpg" alt="Foto VTuber" loading="lazy" />
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Tombol Dark Mode -->
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-      <i class="fas fa-moon"></i>
-    </button>
-
-  </div>
+  <!-- Tombol Dark Mode -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+    <i class="fas fa-moon"></i>
+  </button>
 
   <!-- PapaParse untuk parsing CSV -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js "></script>
   <!-- Script utama -->
   <script src="script.js"></script>
+
 </body>
 </html>
