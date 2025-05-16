@@ -3,6 +3,32 @@ const CSV_URL = 'https://script.googleusercontent.com/macros/echo?user_content_k
 
 const scheduleContainer = document.getElementById('schedule');
 
+// Smooth Scroll Navigation
+document.querySelectorAll('.glass-navbar a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const targetId = link.getAttribute('href');
+    document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// Hamburger Menu Toggle
+const menuToggle = document.getElementById('menu-toggle');
+const navLinks = document.getElementById('nav-links');
+
+if (menuToggle && navLinks) {
+  menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+  });
+
+  // Tutup menu saat klik link
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+    });
+  });
+}
+
 // Tampilkan indikator loading
 function showLoading() {
   scheduleContainer.innerHTML = '<div class="loading">Memuat jadwal...</div>';
@@ -26,6 +52,12 @@ function loadSchedule() {
       }
 
       renderTimeline(data);
+
+      // Animasi fade-in
+      setTimeout(() => {
+        scheduleContainer.style.opacity = '1';
+        scheduleContainer.style.transform = 'translateY(0)';
+      }, 100);
     })
     .catch(error => {
       console.error('Gagal memuat data:', error);
@@ -36,6 +68,20 @@ function loadSchedule() {
 // Render timeline jadwal
 function renderTimeline(data) {
   scheduleContainer.innerHTML = '';
+
+  // Scroll event untuk navbar
+  window.addEventListener('scroll', () => {
+    const navbar = document.querySelector('.glass-navbar');
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+
+  // Reset transformasi untuk animasi ulang
+  scheduleContainer.style.opacity = '0';
+  scheduleContainer.style.transform = 'translateY(20px)';
 
   data.forEach((row, index) => {
     if (!row || row.length < 2 || !row[0] || !row[1]) return;
@@ -75,9 +121,12 @@ function renderTimeline(data) {
     infoElement.className = 'schedule-info';
 
     const agendaText = document.createElement('p');
+    agendaText.className = 'info-agenda'; // 🔹 Kelas baru
     agendaText.textContent = agenda || '-';
+    agendaText.title = agenda || '-'; // 🔎 Tooltip saat hover
 
     const timeText = document.createElement('p');
+    timeText.className = 'info-time'; // 🔹 Kelas baru
     timeText.textContent = waktu || '-';
 
     infoElement.appendChild(agendaText);
